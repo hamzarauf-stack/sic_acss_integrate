@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  sic_service:
+    build:
+      context: ./sic-service
+    container_name: sic_service
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres_db_sic:5432/sic-db
+      - JWT_SECRET_KEY=522c795107c851fe6756c79f997556b7048c13e23ef68b3e5e2894525cd0352d
+    depends_on:
+      - postgres_db_sic
+    volumes:
+      - ./sic-service:/app
+
+  acss_service:
+    build:
+      context: ./acss-service
+    container_name: acss_service
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8001:8000"
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres_db_acss:5432/acss-db
+      - JWT_SECRET_KEY=522c795107c851fe6756c79f997556b7048c13e23ef68b3e5e2894525cd0352d
+    depends_on:
+      - postgres_db_acss
+    volumes:
+      - ./acss-service:/app
+
+  postgres_db_sic:
+    image: 'postgres:14.0'
+    container_name: postgres_db_sic
+    ports:
+      - "5434:5432"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: sic-db
+    volumes:
+      - ./db-data/postgres_sic/:/var/lib/postgresql/data/
+
+  postgres_db_acss:
+    image: 'postgres:14.0'
+    container_name: postgres_db_acss
+    ports:
+      - "5435:5432"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: acss-db
+    volumes:
+      - ./db-data/postgres_acss/:/var/lib/postgresql/data/

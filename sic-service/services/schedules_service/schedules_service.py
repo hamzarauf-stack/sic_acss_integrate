@@ -7,7 +7,7 @@ import logging
 from services.schedules_service.schedules_response import ScheduleItem
 from services.schedules_service.schedule_create import ScheduleCreate
 from models import Schedule
-from services.schedules_service.schedules_repository import create_schedule, fetch_schedules, find_schedules_by_course
+from services.schedules_service.schedules_repository import create_schedule, fetch_schedules, find_schedules_by_course, find_schedules_by_courses_all
 from services.courses_service.courses_repository import find_course_by_id
 
 logger = logging.getLogger(__name__)
@@ -158,11 +158,27 @@ def create_schedules_recieved(schedules_data: List[ScheduleItem], db: Session):
                 db=db
             )
 
-            logger.info("Data Persisted")
+        logger.info("Data Persisted")
+
+        # Fetching the persisted data
+        schedules = find_schedules_by_courses_all(db=db)
+
+        schedules_json = [
+
+            {
+                "course_id": str(schedule.course_id),
+                "room": schedule.room,
+                "start_time": schedule.start_time,
+                "end_time": schedule.end_time,
+                "day_of_week": schedule.day_of_week
+            }
+            for schedule in schedules
+        ]
 
         return {
             "status": 200,
-            "response": "Data Persisted"
+            "response": schedules_json,
+            "response_text": "Data Persisted"
         }
 
     except Exception as e:

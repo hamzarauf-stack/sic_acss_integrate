@@ -46,3 +46,15 @@ def find_schedules_by_course(course_id: UUID, db: Session, limit: int = 10, offs
         return schedules
     except Exception as e:
         raise e
+
+
+def find_schedules_by_courses_all(db: Session):
+    try:
+        from models import Course
+        schedules = (
+            db.query(Schedule).join(
+                Course, Schedule.course_id == Course.id).all()
+        )
+        return schedules
+    except Exception as e:
+        raise e

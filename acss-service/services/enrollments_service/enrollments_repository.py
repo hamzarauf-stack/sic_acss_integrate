@@ -13,3 +13,11 @@ def create_enrollment(enrollment: Enrollment, db: Session):
     except Exception as e:
         db.rollback()
         raise e
+
+
+def fetch_enrollments(db: Session):
+    try:
+        enrollments = db.query(Enrollment).all()
+        return enrollments
+    except Exception as e:
+        raise e

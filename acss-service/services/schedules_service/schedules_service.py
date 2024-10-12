@@ -188,7 +188,7 @@ def fetch_send_schedules_service(db: Session, user_data: dict):
 
         return {
             "status": 200,
-            "response": "Ok, Data Send"
+            "response": response.json()
         }
 
     except Exception as e:

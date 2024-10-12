@@ -162,7 +162,7 @@ def fetch_send_enrollments_service(db: Session, user_data: dict):
 
         return {
             "status": 200,
-            "response": "Ok, Data Send"
+            "response": response.json()
         }
 
     except Exception as e:

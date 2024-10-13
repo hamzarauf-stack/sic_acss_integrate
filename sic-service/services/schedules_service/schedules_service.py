@@ -64,7 +64,8 @@ def fetch_schedules_service(limit: int = 10, offset: int = 0, db: Session = None
         return [
 
             {
-                "course_id": str(schedule.course_id),
+                "schedule_id": str(schedule.id),
+                "course": schedule.course,
                 "room": schedule.room,
                 "start_time": schedule.start_time,
                 "end_time": schedule.end_time,
@@ -83,7 +84,7 @@ def fetch_schedules_by_course_service(course_id: UUID, db: Session, limit: int, 
     try:
         # Checking Course exists or not
         course = find_course_by_id(
-            course_id=course_id,
+            course_id=str(course_id),
             db=db
         )
         if course is None:
@@ -103,7 +104,8 @@ def fetch_schedules_by_course_service(course_id: UUID, db: Session, limit: int, 
         return [
 
             {
-                "course_id": str(schedule.course_id),
+                "schedule_id": str(schedule.id),
+                "course": schedule.course,
                 "room": schedule.room,
                 "start_time": schedule.start_time,
                 "end_time": schedule.end_time,

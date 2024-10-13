@@ -37,7 +37,10 @@ def find_schedules_by_course(course_id: UUID, db: Session, limit: int = 10, offs
         db.query(Schedule)
         .join(Course, Schedule.course_id == course_id)
         .join(Room, Schedule.room_id == Room.id)
-        .options(joinedload(Schedule.rooms))
+        .options(
+            joinedload(Schedule.rooms),
+            joinedload(Schedule.courses)
+        )
         .filter(
             Schedule.course_id == course_id).limit(limit).offset(offset).all()
     )

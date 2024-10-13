@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from services.schedules_service.schedule_create import ScheduleCreate
 from services.schedules_service.schedules_response import ScheduleItem
-from services.schedules_service.schedules_service import create_schedule_service, fetch_schedules_service, find_schedules_by_course, create_schedules_recieved
+from services.schedules_service.schedules_service import create_schedule_service, fetch_schedules_service, create_schedules_recieved, fetch_schedules_by_course_service
 from auth_dependency.auth_verify import get_current_user
 
 router = APIRouter()
@@ -24,7 +24,7 @@ def get_schedules(limit: int = 10, offset: int = 0, db: Session = Depends(get_db
 
 @router.get("/{course_id}")
 def get_schedules_by_course(course_id: UUID, limit: int = 10, offset: int = 0, db: Session = Depends(get_db)):
-    return find_schedules_by_course(
+    return fetch_schedules_by_course_service(
         course_id=course_id,
         db=db,
         limit=limit,

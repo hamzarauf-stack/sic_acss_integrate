@@ -17,12 +17,12 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=List[RoomCreate])
-def fetch_courses(limit: int = 10, offset: int = 0, db: Session = Depends(get_db)):
+def fetch_rooms(limit: int = 10, offset: int = 0, db: Session = Depends(get_db)):
     rooms = fetch_rooms_service(db=db, limit=limit, offset=offset)
     return rooms
 
 
 @router.get("/{room_id}", response_model=RoomCreate)
-def find_course_by_id(room_id: UUID, db: Session = Depends(get_db)):
+def find_room_by_id(room_id: UUID, db: Session = Depends(get_db)):
     room = fetch_room_by_id_service(room_id=str(room_id), db=db)
     return room

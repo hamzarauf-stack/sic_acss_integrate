@@ -85,8 +85,9 @@ def fetch_enrollments_service(limit: int = 10, offset: int = 0, db: Session = No
         return [
 
             {
-                "student_id": enrollment.student_id,
-                "course_id": enrollment.course_id,
+                "enrollment_id": str(enrollment.id),
+                "student": enrollment.student,
+                "course": enrollment.course,
                 "enrollment_date": enrollment.enrollment_date
             }
             for enrollment in enrollments
@@ -123,6 +124,7 @@ def fetch_enrollments_by_student_service(student_id: UUID, db: Session, limit: i
         return [
 
             {
+                "enrollment_id": str(enrollment.id),
                 "student": enrollment.student,
                 "course": enrollment.course,
                 "enrollment_date": enrollment.enrollment_date

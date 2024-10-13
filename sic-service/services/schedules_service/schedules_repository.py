@@ -18,7 +18,9 @@ def create_schedule(schedule: Schedule, db: Session):
 
 
 def fetch_schedules(db: Session, limit: int = 10, offset: int = 0) -> List[Schedule]:
-    schedules = db.query(Schedule).limit(limit).offset(offset).all()
+    from models import Course
+    schedules = db.query(Schedule).join(Course, Schedule.course_id == Course.id).options(
+        joinedload(Schedule.course)).limit(limit).offset(offset).all()
     return schedules
 
 

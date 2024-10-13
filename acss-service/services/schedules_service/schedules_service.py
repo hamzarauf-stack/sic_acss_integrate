@@ -1,4 +1,5 @@
 from uuid import UUID
+from uuid import uuid4
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 import requests
@@ -40,6 +41,7 @@ def create_schedule_service(schedule_data: ScheduleCreate, db: Session):
 
         # Creating a new schedule instance
         new_schedule = Schedule(
+            id=uuid4(),
             course_id=UUID(schedule_data.course_id),
             room_id=UUID(schedule_data.room_id),
             start_time=schedule_data.start_time,
@@ -94,7 +96,7 @@ def fetch_schedules_by_course_service(course_id: UUID, db: Session, limit: int, 
     try:
         # Checking Course exists or not
         course = find_course_by_id(
-            course_id=course_id,
+            course_id=str(course_id),
             db=db
         )
         if course is None:
@@ -114,16 +116,18 @@ def fetch_schedules_by_course_service(course_id: UUID, db: Session, limit: int, 
         return [
 
             {
-                "course_id": str(schedule.course_id),
-                "rooms": schedule.rooms,
+                "schedule_id": str(schedule.id),
                 "start_time": schedule.start_time,
                 "end_time": schedule.end_time,
-                "day_of_week": schedule.day_of_week
+                "day_of_week": schedule.day_of_week,
+                "courses": schedule.courses,
+                "rooms": schedule.rooms
             }
             for schedule in schedules
         ]
 
     except Exception as e:
+        logger.error('Error: %s', e, exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=str(e)

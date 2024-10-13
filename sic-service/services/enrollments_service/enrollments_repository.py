@@ -18,7 +18,10 @@ def create_enrollment(enrollment: Enrollment, db: Session):
 
 
 def fetch_enrollments(db: Session, limit: int = 10, offset: int = 0) -> List[Enrollment]:
-    enrollments = db.query(Enrollment).limit(limit).offset(offset).all()
+    from models import Student
+    from models import Course
+    enrollments = db.query(Enrollment).join(Course, Enrollment.course_id == Course.id).join(
+        Student, Student.id == Enrollment.student_id).limit(limit).offset(offset).all()
     return enrollments
 
 

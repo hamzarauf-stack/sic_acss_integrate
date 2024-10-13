@@ -2,13 +2,15 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 import requests
-import json
+import logging
 
 from services.schedules_service.schedules_create import ScheduleCreate
 from models import Schedule
 from services.schedules_service.schedules_repository import find_schedules_by_course, create_schedule, fetch_schedules, find_schedules_by_courses, find_schedules_by_courses_all
 from services.courses_service.courses_repository import find_course_by_id
 from services.rooms_service.rooms_repository import find_room_by_id
+
+logger = logging.getLogger(__name__)
 
 
 def create_schedule_service(schedule_data: ScheduleCreate, db: Session):
@@ -177,7 +179,8 @@ def fetch_send_schedules_service(db: Session, user_data: dict):
                 },
                 "start_time": str(schedule.start_time),
                 "end_time": str(schedule.end_time),
-                "day_of_week": schedule.day_of_week
+                "day_of_week": schedule.day_of_week,
+                "id": str(schedule.id)
             }
             for schedule in schedules
         ]
@@ -198,6 +201,7 @@ def fetch_send_schedules_service(db: Session, user_data: dict):
         }
 
     except Exception as e:
+        logger.error("Error: %s", e, exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=str(e)

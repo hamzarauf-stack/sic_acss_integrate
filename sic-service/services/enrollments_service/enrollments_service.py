@@ -1,4 +1,5 @@
 from uuid import UUID
+from uuid import uuid4
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 import requests
@@ -52,6 +53,7 @@ def create_enrollment_service(enrollment_data: EnrollmentCreate, db: Session):
 
         # Creating a new enrollment instance
         new_enrollment = Enrollment(
+            id=uuid4(),
             student_id=UUID(enrollment_data.student_id),
             course_id=UUID(enrollment_data.course_id),
             enrollment_date=enrollment_data.enrollment_date

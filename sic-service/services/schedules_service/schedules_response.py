@@ -16,6 +16,7 @@ class Room(BaseModel):
 
 
 class ScheduleItem(BaseModel):
+    id: UUID
     course: Course
     rooms: Room
     start_time: str

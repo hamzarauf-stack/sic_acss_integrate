@@ -38,7 +38,7 @@ function Dashboard() {
         setCourseSchedules('');
       }
     } catch (error) {
-      setError(data.response.detail || 'An error occurred. Please try again.');
+      setError('An error occurred. Please try again.');
       setCourseSchedules('');
     }
   };

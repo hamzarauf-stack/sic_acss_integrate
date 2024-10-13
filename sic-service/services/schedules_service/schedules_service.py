@@ -7,7 +7,7 @@ import logging
 from services.schedules_service.schedules_response import ScheduleItem
 from services.schedules_service.schedule_create import ScheduleCreate
 from models import Schedule
-from services.schedules_service.schedules_repository import create_schedule, fetch_schedules, find_schedules_by_course, find_schedules_by_courses_all
+from services.schedules_service.schedules_repository import create_schedule, fetch_schedules, find_schedules_by_course, find_schedules_by_courses_all, find_schedule_by_id
 from services.courses_service.courses_repository import find_course_by_id
 
 logger = logging.getLogger(__name__)
@@ -125,17 +125,42 @@ def create_schedules_recieved(schedules_data: List[ScheduleItem], db: Session):
     from models import Schedule
     from services.courses_service.courses_repository import create_course
 
-    # # Hashmap to keep track of courses that have been created
-    created_courses = {}
-
     # Persisting course schedules
     try:
         for schedule in schedules_data:
 
             logger.info("Data Persistance Started")
 
-            # Creating the course
-            if schedule.course.id not in created_courses:
+            # Checking for course existance
+            course_exists = find_course_by_id(
+                course_id=str(schedule.course.id),
+                db=db
+            )
+            if course_exists:
+                # Now checking for schedule
+                schedule_exists = find_schedule_by_id(
+                    schedule_id=str(schedule.id),
+                    db=db
+                )
+                if schedule_exists:
+                    continue
+                else:
+                    # Creating the schedule
+                    new_schedule = Schedule(
+                        id=schedule.id,
+                        course_id=schedule.course.id,
+                        room=schedule.rooms.name,
+                        start_time=schedule.start_time,
+                        end_time=schedule.end_time,
+                        day_of_week=schedule.day_of_week
+                    )
+                    create_schedule(
+                        schedule=new_schedule,
+                        db=db
+                    )
+
+            else:
+                # Creating the course
                 new_course = Course(
                     id=schedule.course.id,
                     name=schedule.course.name,
@@ -146,20 +171,19 @@ def create_schedules_recieved(schedules_data: List[ScheduleItem], db: Session):
                     course=new_course,
                     db=db
                 )
-                created_courses[schedule.course.id] = True
 
-            # Creating the schedule
-            new_schedule = Schedule(
-                course_id=schedule.course.id,
-                room=schedule.rooms.name,
-                start_time=schedule.start_time,
-                end_time=schedule.end_time,
-                day_of_week=schedule.day_of_week
-            )
-            create_schedule(
-                schedule=new_schedule,
-                db=db
-            )
+                # Creating the schedule
+                new_schedule = Schedule(
+                    course_id=schedule.course.id,
+                    room=schedule.rooms.name,
+                    start_time=schedule.start_time,
+                    end_time=schedule.end_time,
+                    day_of_week=schedule.day_of_week
+                )
+                create_schedule(
+                    schedule=new_schedule,
+                    db=db
+                )
 
         logger.info("Data Persisted")
 
@@ -185,6 +209,7 @@ def create_schedules_recieved(schedules_data: List[ScheduleItem], db: Session):
         }
 
     except Exception as e:
+        logger.error("Error: %s", e, exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=str(e)

@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from models import Enrollment
 
 from services.enrollments_service.enrollments_response import EnrollmentResponse
-from services.enrollments_service.enrollments_repository import create_enrollment, fetch_enrollments
+from services.enrollments_service.enrollments_repository import create_enrollment, fetch_enrollments, find_enrollment_by_id
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +15,15 @@ def create_enrollments_recieved(enrollments_data: List[EnrollmentResponse], db: 
     try:
         logger.info("Data Persistance Started")
         for enrollment in enrollments_data:
+            # Checking for enrollment existance
+            enrollment_exists = find_enrollment_by_id(
+                enrollment_id=enrollment.id,
+                db=db
+            )
+            if enrollment_exists:
+                continue
+
+            # Creation of enrollment
             new_enrollment = Enrollment(
                 id=enrollment.id,
                 course_id=enrollment.course_id,
@@ -46,6 +55,7 @@ def create_enrollments_recieved(enrollments_data: List[EnrollmentResponse], db: 
         }
 
     except Exception as e:
+        logger.error("Error : %s", e, exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=str(e)

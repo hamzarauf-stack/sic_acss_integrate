@@ -17,17 +17,11 @@ def create_room(room: Room, db: Session):
 
 
 def fetch_rooms(db: Session, limit: int = 10, offset: int = 0) -> List[Room]:
-    try:
-        rooms = db.query(Room).limit(limit).offset(offset).all()
-        return rooms
-    except Exception as e:
-        raise e
+    rooms = db.query(Room).limit(limit).offset(offset).all()
+    return rooms
 
 
 def find_room_by_id(room_id: UUID, db: Session):
-    try:
-        room = db.query(Room).filter(
-            Room.id == UUID(room_id)).first()
-        return room
-    except Exception as e:
-        raise e
+    room = db.query(Room).filter(
+        Room.id == UUID(room_id)).first()
+    return room

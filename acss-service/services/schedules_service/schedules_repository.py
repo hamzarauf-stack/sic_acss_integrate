@@ -19,88 +19,73 @@ def create_schedule(schedule: Schedule, db: Session):
 
 
 def fetch_schedules(db: Session, limit: int = 10, offset: int = 0) -> List[Schedule]:
-    try:
-        schedules = db.query(Schedule).limit(limit).offset(offset).all()
-        return schedules
-    except Exception as e:
-        raise e
+    schedules = db.query(Schedule).limit(limit).offset(offset).all()
+    return schedules
 
 
 def find_schedule_by_id(schedule_id: UUID, db: Session):
-    try:
-        schedule = db.query(Schedule).filter(
-            Schedule.id == UUID(schedule_id)).first()
-        return schedule
-    except Exception as e:
-        raise e
+    schedule = db.query(Schedule).filter(
+        Schedule.id == UUID(schedule_id)).first()
+    return schedule
 
 
 def find_schedules_by_course(course_id: UUID, db: Session, limit: int = 10, offset: int = 0):
-    # To prevent relative import
+
     from models import Course
     from models import Room
-    try:
-        schedules = (
-            db.query(Schedule)
-            .join(Course, Schedule.course_id == course_id)
-            .join(Room, Schedule.room_id == Room.id)
-            .options(joinedload(Schedule.rooms))
-            .filter(
-                Schedule.course_id == course_id).limit(limit).offset(offset).all()
-        )
-        return schedules
-    except Exception as e:
-        raise e
+    schedules = (
+        db.query(Schedule)
+        .join(Course, Schedule.course_id == course_id)
+        .join(Room, Schedule.room_id == Room.id)
+        .options(joinedload(Schedule.rooms))
+        .filter(
+            Schedule.course_id == course_id).limit(limit).offset(offset).all()
+    )
+    return schedules
 
 
 def find_schedules_by_courses_all(db: Session):
-    # To prevent relative import
+
     from models import Course
     from models import Room
-    try:
-        schedules = (
-            db.query(Schedule)
-            .join(Course, Schedule.course_id == Course.id)
-            .join(Room, Schedule.room_id == Room.id)
-            .options(
-                joinedload(Schedule.rooms),
-                joinedload(Schedule.courses)
-            )
-            .all()
+
+    schedules = (
+        db.query(Schedule)
+        .join(Course, Schedule.course_id == Course.id)
+        .join(Room, Schedule.room_id == Room.id)
+        .options(
+            joinedload(Schedule.rooms),
+            joinedload(Schedule.courses)
         )
-        return schedules
-    except Exception as e:
-        raise e
+        .all()
+    )
+    return schedules
 
 
 def find_schedules_by_courses(db: Session, limit: int = 10, offset: int = 0):
-    # To prevent relative import
+
     from models import Course
     from models import Room
-    try:
-        schedules = (
-            db.query(Schedule)
-            .join(Course, Schedule.course_id == Course.id)
-            .join(Room, Schedule.room_id == Room.id)
-            .options(
-                joinedload(Schedule.rooms),
-                joinedload(Schedule.courses)
-            )
-            .limit(limit).offset(offset).all()
+
+    schedules = (
+        db.query(Schedule)
+        .join(Course, Schedule.course_id == Course.id)
+        .join(Room, Schedule.room_id == Room.id)
+        .options(
+            joinedload(Schedule.rooms),
+            joinedload(Schedule.courses)
         )
-        return schedules
-    except Exception as e:
-        raise e
+        .limit(limit).offset(offset).all()
+    )
+    return schedules
 
 
 def find_schedules_by_room(room_id: UUID, db: Session, limit: int = 10, offset: int = 0):
-    # To prevent relative import
+
     from models import Room
-    try:
-        schedules = (
-            db.query(Schedule).join(Room, Schedule.room_id == room_id).filter(
-                Schedule.room_id == room_id).limit(limit).offset(offset).all()
-        )
-        return schedules
-    except Exception as e:
-        raise e
+
+    schedules = (
+        db.query(Schedule).join(Room, Schedule.room_id == room_id).filter(
+            Schedule.room_id == room_id).limit(limit).offset(offset).all()
+    )
+    return schedules

@@ -1,6 +1,7 @@
 from typing import List
 import logging
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from models import Enrollment
 
 from services.enrollments_service.enrollments_response import EnrollmentResponse
@@ -45,4 +46,7 @@ def create_enrollments_recieved(enrollments_data: List[EnrollmentResponse], db: 
         }
 
     except Exception as e:
-        raise e
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )

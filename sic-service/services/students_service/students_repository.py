@@ -21,17 +21,11 @@ def create_student(student: Student, db: Session):
 
 
 def fetch_students(db: Session, limit: int = 10, offset: int = 0) -> List[Student]:
-    try:
-        students = db.query(Student).limit(limit).offset(offset).all()
-        return students
-    except Exception as e:
-        raise e
+    students = db.query(Student).limit(limit).offset(offset).all()
+    return students
 
 
 def find_student_by_id(student_id: UUID, db: Session):
-    try:
-        student = db.query(Student).filter(
-            Student.id == UUID(student_id)).first()
-        return student
-    except Exception as e:
-        raise e
+    student = db.query(Student).filter(
+        Student.id == UUID(student_id)).first()
+    return student

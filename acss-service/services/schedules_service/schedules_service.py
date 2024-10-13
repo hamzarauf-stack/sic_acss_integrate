@@ -25,7 +25,7 @@ def create_schedule_service(schedule_data: ScheduleCreate, db: Session):
                 detail="Course with this ID don't exists"
             )
 
-        # Checking Course exists or not
+        # Checking room exists or not
         room = find_room_by_id(
             room_id=schedule_data.room_id,
             db=db
@@ -122,7 +122,10 @@ def fetch_schedules_by_course_service(course_id: UUID, db: Session, limit: int, 
         ]
 
     except Exception as e:
-        raise e
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
 
 def fetch_schedules_by_courses_service(db: Session, limit: int, offset: int):
@@ -147,7 +150,10 @@ def fetch_schedules_by_courses_service(db: Session, limit: int, offset: int):
         ]
 
     except Exception as e:
-        raise e
+        raise HTTPException(
+            status_code=500,
+            detail=e
+        )
 
 
 def fetch_send_schedules_service(db: Session, user_data: dict):
@@ -192,4 +198,7 @@ def fetch_send_schedules_service(db: Session, user_data: dict):
         }
 
     except Exception as e:
-        raise e
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )

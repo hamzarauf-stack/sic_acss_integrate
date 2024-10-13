@@ -17,17 +17,11 @@ def create_course(course: Course, db: Session):
 
 
 def fetch_courses(db: Session, limit: int = 10, offset: int = 0) -> List[Course]:
-    try:
-        courses = db.query(Course).limit(limit).offset(offset).all()
-        return courses
-    except Exception as e:
-        raise e
+    courses = db.query(Course).limit(limit).offset(offset).all()
+    return courses
 
 
 def find_course_by_id(course_id: UUID, db: Session):
-    try:
-        course = db.query(Course).filter(
-            Course.id == UUID(course_id)).first()
-        return course
-    except Exception as e:
-        raise e
+    course = db.query(Course).filter(
+        Course.id == UUID(course_id)).first()
+    return course

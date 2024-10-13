@@ -113,11 +113,14 @@ def fetch_schedules_by_course_service(course_id: UUID, db: Session, limit: int, 
         ]
 
     except Exception as e:
-        raise e
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
 
 def create_schedules_recieved(schedules_data: List[ScheduleItem], db: Session):
-    # to prevent circular import
+
     from models import Course
     from models import Schedule
     from services.courses_service.courses_repository import create_course
@@ -182,4 +185,7 @@ def create_schedules_recieved(schedules_data: List[ScheduleItem], db: Session):
         }
 
     except Exception as e:
-        raise e
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )

@@ -11,12 +11,10 @@ def find_user_by_email_or_username(email: str, username: str, db: Session):
 
 
 def find_user_by_id(user_id: UUID, db: Session):
-    try:
-        user = db.query(User).filter(
-            User.id == UUID(user_id)).first()
-        return user
-    except Exception as e:
-        raise e
+
+    user = db.query(User).filter(
+        User.id == UUID(user_id)).first()
+    return user
 
 
 def create_user(user: User, db: Session):

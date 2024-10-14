@@ -104,6 +104,24 @@ The frontend application is located in the `sci-acss-integrate-frontend` directo
 
 The frontend server should now be running, and you can access it at [http://localhost:3000](http://localhost:3000).
 
+### 5. Run Database Migrations
+
+After starting the services, you need to run database migrations for both `sic_service` and `acss_service` to set up the database schema. Use the following commands:
+
+1. **For `sic_service`**:
+
+    ```bash
+    docker exec -it sic_service alembic upgrade head
+    ```
+
+2. **For `acss_service`**:
+
+    ```bash
+    docker exec -it acss_service alembic upgrade head
+    ```
+
+These commands will run the Alembic migrations inside the running containers to ensure the databases are properly set up.
+
 ## Environment Variables
 
 Make sure to update the environment variables in the `docker-compose.yml` file if needed. Here are the variables you might want to configure:
